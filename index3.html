@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="getData">GET DATA</button>
+    <div id="output"></div>
+
+
+    <script>
+        document.getElementById('getData').addEventListener('click', getData);
+       
+            
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '398829425257233',
+                autoLogAppEvents: true,
+                xfbml: true,
+                version: 'v12.0'
+            });
+
+            fetch('http://radioondapopular.com/wp-json/wp/v2/posts?categories=38')
+                .then(res => res.json()).then(data => {
+                    var fecha = new Date;
+                    var date = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + (fecha.getDate());
+                    let output = '<h2>URLS</h2>';
+                    let numeros = [];
+
+                        console.log(date)
+                    function zfill(number, width) {
+                        var numberOutput = Math.abs(number); /* Valor absoluto del número */
+                        var length = number.toString().length; /* Largo del número */
+                        var zero = "0"; /* String de cero */
+
+                        if (width <= length) {
+                            if (number < 0) {
+                                return ("-" + numberOutput.toString());
+                            } else {
+                                return numberOutput.toString();
+                            }
+                        } else {
+                            if (number < 0) {
+                                return ("-" + (zero.repeat(width - length)) + numberOutput.toString());
+                            } else {
+                                return ((zero.repeat(width - length)) + numberOutput.toString());
+                            }
+                        }
+                    }
+
+                    for (let i = 7; i < 24; i++) {
+                        if (i < 10) {
+                            numeros[i] = zfill(i,2);
+                        } else {
+                            numeros[i] = zfill(i);
+                        }
+                    }
+
+                    numeros.map(res => console.log(res));
+
+                    data.forEach((data, i) => {
+                        
+                        FB.api(
+                            '/104330924671939/feed',
+                            'POST',
+                            {
+                                "message": `${data.title.rendered}`,
+                                "link": `${data.link}`,
+                                "published": "false",
+                                "scheduled_publish_time": `${date}T${i+7}:15:30-05:00`,
+                                'access_token': 'EAAFqu7Y36xEBAE76xwEKBP9MvFUNFc8OFbq5h43HVlWlqwb5yntjMCY7MOEZCPC2GumZBrc7MLZAs1uDNeVLL4bhmDVGAljmfDYyjnh4vwS1mXgNfNbxRoTMJrRfvcrJ6wnf1ZAtCFZCV3uQpjShA1y8y9o5i1sRQMZB872qSfXkYfBnaKUiX8rVchgq5R9KGT8cpEHJbZCiQZDZD'
+                            },
+                            function (response) {
+                                console.log(response);
+                            }
+                        );
+
+                        
+                    });
+                    document.getElementById('output').innerHTML = output;
+
+                });
+
+
+
+
+        };
+
+    
+    </script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+</body>
+
+</html>

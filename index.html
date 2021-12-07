@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="publicar">PUBLICAR</button>
+    <div id="output"></div>
+    <div id="horas"></div>
+    <script>
+        document.getElementById("publicar").addEventListener("click", publicar);
+        let number = 0;
+        function publicar() {
+            const date = new Date();
+            fecha = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+            hora = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+            number++;
+            let output = `<h2>PUBLICADO ${number}</h2>
+                          <h3>${fecha}</h3>
+                          <h4>${hora}</h4>  `;
+            document.getElementById("output").innerHTML = output;
+
+            let listHora = ["07", "08", "09", "10", "11", "12", "13", "14", "15", "16"];
+
+            listHora.forEach((data) => {
+
+            })
+
+
+            let horas = `<h4></h4>`;
+            document.getElementById("horas").innerHTML = horas;
+
+          
+            let decode = str => {
+                return str.replace(/&#(\d+);/g, function (match, dec) {
+                    return String.fromCharCode(dec);
+                });
+            }
+
+            let links = [];
+            let title = [];
+            fetch("https://radioondapopular.com/wp-json/wp/v2/posts?categories=38")
+                .then(res => res.json()).then(data => {
+                    data.map((data, i) => {
+                        links[i] = data.link;
+                        title[i] = decode(data.title.rendered);
+                        facebookData(title[i], links[i], fecha, `${listHora[i]}:10:05`)
+                    })
+                }).catch(err => console.log(err));
+            //facebookData("Hola amigos como estan", "https://radioondapopular.com", "2021-12-07", "16:49:05")
+
+        }
+
+
+        function facebookData(title, link, fecha, hora) {
+            this.title = title;
+            this.link = link;
+            this.fecha = fecha;
+            this.hora = hora;
+            FB.init({
+                appId: '398829425257233',
+                autoLogAppEvents: true,
+                xfbml: true,
+                version: 'v12.0'
+            });
+            console.log(title, link, fecha, hora);
+            // facebookPost(title, link, fecha,hora);
+
+        }
+        function facebookPost(title, link, fecha, hora) {
+            FB.api(
+                '/104330924671939/feed',
+                'POST',
+                {
+                    "message": `${title}`,
+                    "link": `${link}`,
+                    "published": "false",
+                    "scheduled_publish_time": `${fecha}T${hora}-05:00`,
+                    'access_token': 'EAAFqu7Y36xEBAE76xwEKBP9MvFUNFc8OFbq5h43HVlWlqwb5yntjMCY7MOEZCPC2GumZBrc7MLZAs1uDNeVLL4bhmDVGAljmfDYyjnh4vwS1mXgNfNbxRoTMJrRfvcrJ6wnf1ZAtCFZCV3uQpjShA1y8y9o5i1sRQMZB872qSfXkYfBnaKUiX8rVchgq5R9KGT8cpEHJbZCiQZDZD'
+                },
+                function (response) {
+                    console.log(response);
+                }
+            );
+        }
+
+
+    </script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+</body>
+
+</html>

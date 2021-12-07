@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch API Sandbox</title>
+</head>
+
+<body>
+    <button type="button" id="getText">GET TEXT</button>
+    <button type="button" id="getTitle">GET TITLE</button>
+    <button type="button" id="getUrl">GET URL</button>
+    <button type="button" id="publicar">PUBLICAR</button>
+    <div id="output"></div>
+
+
+
+
+
+    <script>
+        document.getElementById('getText').addEventListener('click', getText);
+        document.getElementById('getTitle').addEventListener('click', getTitle);
+        document.getElementById('getUrl').addEventListener('click', getUrl);
+        document.getElementById('publicar').addEventListener('click', publicar);
+
+        function publicar() {
+            window.fbAsyncInit = function () {
+                FB.init({
+                    appId: '398829425257233',
+                    autoLogAppEvents: true,
+                    xfbml: true,
+                    version: 'v12.0'
+                });
+
+                getUrl()
+
+                FB.api(
+                    '/104330924671939/feed',
+                    'POST',
+                    {
+                        "message": "Envivo",
+                        "link": "https://www.youtube.com/watch?v=Gx4iBLKLVHk",
+                        "published": "true",
+                        'access_token': 'EAAFqu7Y36xEBAEcvMeDzHbi8FWv1jFB7tAV2yHARZCZCR9ZC42wn7nZCVw1TSDd2pVvPlykwnj9Fvt9wEysAZA0FwL81ZAuyDauQCZBUrgN43I5dQPfNrVyACuXzigqmJlHZB1vHjetO9NMFKmkPDucjLvUBoZC5mfg21FiOJT4JuhMPv8Cjpb8l3h0uLW3quLdZAmE62sQjQoFfD4tH0zbXZAbmb0xZCHwMqwoZD'
+                    },
+                    function (response) {
+                        console.log(response);
+                    }
+                );
+
+            };
+        }
+
+        function getUrl() {
+            fetch('http://radioondapopular.com/wp-json/wp/v2/posts?categories=38')
+                .then(res => res.json()).then(data => {
+                    let output = '<h2>URLS</h2>';
+                    data.forEach(data => {
+                        output += `                   
+                    <li>${data.link}</li>
+                   `
+                    });
+                    document.getElementById('output').innerHTML = output;
+
+                });
+        }
+
+
+        function getText() {
+            /*  fetch('text.txt')
+                 .then(function (data) {
+                     return data.text();
+                 }).then(function (data) {
+                     console.log(data)
+                 }) */
+
+            fetch('text.txt')
+                .then((res) => res.text())
+                .then((res) => {
+                    document.getElementById('output').innerHTML = res;
+                });
+
+        }
+
+        function getTitle() {
+            fetch('https://radioondapopular.com/wp-json/wp/v2/posts?categories=38')
+                .then((res) => res.json()).then((data) => {
+                    let output = '<h2>Titulares</h2>';
+                    console.log(data);
+                    data.forEach((data) => {
+                        output = output + `
+                    <ul>
+                     <li>Noticia : ${data.title.rendered}</li>
+                     <li>Fecha : ${data.date}</li>
+                     <li>Resumen: ${data.excerpt.rendered} </li>
+                    </ul>
+                    `
+                    });
+                    document.getElementById('output').innerHTML = output;
+                })
+        }
+
+    </script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+</body>
+
+</html>
