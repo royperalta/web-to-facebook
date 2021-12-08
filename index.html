@@ -25,17 +25,19 @@
                           <h4>${hora}</h4>  `;
             document.getElementById("output").innerHTML = output;
 
-            let listHora = ["07", "08", "09", "10", "11", "12", "13", "14", "15", "16"];
+            let listHora = ["07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"];
 
-            listHora.forEach((data) => {
 
-            })
+            if((date.getHours()+1)>23){{
+
+            }}
+
 
 
             let horas = `<h4></h4>`;
             document.getElementById("horas").innerHTML = horas;
 
-          
+
             let decode = str => {
                 return str.replace(/&#(\d+);/g, function (match, dec) {
                     return String.fromCharCode(dec);
@@ -45,16 +47,19 @@
             let links = [];
             let title = [];
             fetch("https://radioondapopular.com/wp-json/wp/v2/posts?categories=38")
-                .then(res => res.json()).then(data => {
+                .then(res => res.json()).then(data => {                   
                     data.map((data, i) => {
+                        let h = date.getHours()+i;
                         links[i] = data.link;
                         title[i] = decode(data.title.rendered);
-                        facebookData(title[i], links[i], fecha, `${listHora[i]}:10:05`)
+                        facebookData(title[i], links[i], fecha, `${listHora[i]}:10:05`);
                     })
                 }).catch(err => console.log(err));
             //facebookData("Hola amigos como estan", "https://radioondapopular.com", "2021-12-07", "16:49:05")
 
         }
+
+
 
 
         function facebookData(title, link, fecha, hora) {
@@ -81,7 +86,7 @@
                     "link": `${link}`,
                     "published": "false",
                     "scheduled_publish_time": `${fecha}T${hora}-05:00`,
-                    'access_token': 'AAEAAFqu7Y36xEBAE76xwEKBP9MvFUNFc8OFbq5h43HVlWlqwb5yntjMCY7MOEZCPC2GumZBrc7MLZAs1uDNeVLL4bhmDVGAljmfDYyjnh4vwS1mXgNfNbxRoTMJrRfvcrJ6wnf1ZAtCFZCV3uQpjShA1y8y9o5i1sRQMZB872qSfXkYfBnaKUiX8rVchgq5R9KGT8cpEHJbZCiQZDZD'
+                    'access_token': 'access_token'
                 },
                 function (response) {
                     console.log(response);
